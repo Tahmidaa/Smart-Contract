@@ -23,8 +23,7 @@ contract Project
     
     Donatee[] public donateeList;
     
-    //The needy people would upload their data on the portal connected to the Blockchain
-system
+    //The needy people would upload their data on the portal connected to the Blockchain system
 
     function _donateeDetails (string memory name, string memory message ) public OnlyDonatee{
          Donatee memory z;
@@ -36,8 +35,7 @@ system
             
     }
      
-    //The community can access their data from the Blockchain and would be able to help
-them directly and safely
+    //The community can access their data from the Blockchain and would be able to help them directly and safely
 
     function getListOfDonatees() public view returns (Donatee[] memory) {
         return donateeList;
@@ -100,7 +98,7 @@ them directly and safely
                   if (msg.value > threshold){
           // emitted when a donation amount > threshold
             emit AboveTheThreshold(
-                "Your donation amount is above the threshold! ",
+                "Your donation amount is above the threshold! ",//message
                 msg.sender, //account address
                 msg.value //amount
             );
