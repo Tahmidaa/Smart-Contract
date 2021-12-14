@@ -41,7 +41,7 @@ contract Project
         return donateeList;
     }
     
-
+//Q3:
 
     uint256 public threshold;
     uint256 max;
@@ -106,6 +106,11 @@ contract Project
              }
             
     } 
+    
+    
+    
+    
+//Ejmen part: Q3, b part
            
 // Defining a constructor   
      constructor() public{   
@@ -113,6 +118,30 @@ contract Project
         threshold = 10 ether;
 
     }
+
+      struct CharitableOrg{
+        address charitableAddress;
+    }  
+
+    function withdraw(uint256 amount) public payable OnlyDonor{
+            if(amount > 0){
+                if(amount > threshold){
+                    emit AboveTheThreshold(
+                "Your withdrawl amount is above the threshold! ",
+                msg.sender,
+                amount
+            );
+                }else{
+                    (balance -= amount);
+                }
+            }
+            
+    }
+
+    function getBalance() public view returns(uint256){
+        return balance;
+    }
+           
 
      
 
