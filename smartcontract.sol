@@ -10,7 +10,8 @@ contract Project
     }
 
 
-    // Restrict functions to only valid donatee account user
+// Restrict functions to only valid donatee account user
+    
     modifier OnlyDonatee {
         require(
             donatee == msg.sender,
@@ -34,7 +35,7 @@ contract Project
             
             
     }
-     
+    
     //The community can access their data from the Blockchain and would be able to help them directly and safely
 
     function getListOfDonatees() public view returns (Donatee[] memory) {
@@ -50,12 +51,8 @@ contract Project
       address donor;
       address charitableorg;
 
-
- struct CharitableOrg{
-        address charitableAddress;
-    }  
-    
 // Restrict functions to only valid charitable organization account user
+
     modifier OnlyCharitableOrg{
         require(
             charitableorg == msg.sender,
@@ -64,12 +61,11 @@ contract Project
         _; 
     }
 
-    
+    // Restrict functions to only valid donor account user
+
     struct Donor{
         address donorAddress;
     }
-    
-    // Restrict functions to only valid donor account user
     modifier OnlyDonor {
         require(
             donor == msg.sender,
@@ -94,34 +90,30 @@ contract Project
         );
     
     function donate(uint256 amount) public payable OnlyDonor{
-             if (msg.value > 0) {
-                  if (msg.value > threshold){
-          // emitted when a donation amount > threshold
-            emit AboveTheThreshold(
-                "Your donation amount is above the threshold! ",//message
+            if(amount > 0){
+                if(amount > threshold){
+                          // emitted when a donation amount > threshold
+                    emit AboveTheThreshold(
+                "Your donation amount is above the threshold! ", //message
                 msg.sender, //account address
-                msg.value //amount
+                amount //amount
             );
-        } else (balance += msg.value);
-             }
+                }else{
+                    (balance += amount);
+                }
+            }
             
     } 
-    
-    
-    
-    
+
+
 //Ejmen part: Q3, b part
-           
+
 // Defining a constructor   
      constructor() public{   
         max = 50 ether;
         threshold = 10 ether;
 
     }
-
-      struct CharitableOrg{
-        address charitableAddress;
-    }  
 
     function withdraw(uint256 amount) public payable OnlyDonor{
             if(amount > 0){
@@ -138,13 +130,13 @@ contract Project
             
     }
 
-    function getBalance() public view returns(uint256){
+    function getBalance() public view returns (uint256){
         return balance;
     }
            
 
-     
 
+      
     }
 
 
