@@ -1,141 +1,165 @@
-// SPDX-License-Identifier: GPL-3.0
+	
 pragma solidity ^0.8.0;
-contract Project
-{
-    struct Donatee{
+	contract Project
+	{
+	    struct Donatee{
+	
 
-        string name;
-        string message;
-        address donateeAddress;
-       
-    }
+	        string name;
+	        string message;
+	        address donateeAddress;
+	       
+	    }
+	
 
+	
 
-    
-    /*modifier OnlyDonatee {
-        require(
-            donatee == msg.sender,
-            "You are not allowed to perform this action"
-        );
-        _; 
-    }*/
+	// Restrict functions to only valid donatee account user
+	    
+	    modifier OnlyDonatee {
+	        require(
+	            donatee == msg.sender,
+	            "You are not allowed to perform this action"
+	        );
+	        _; 
+	    }
+	
 
-    
-    
-    Donatee[] public donateeList;
-    
-    function _donateeDetails (string memory name, string memory message ) public  { //OnlyDonatee/
-         Donatee memory z;
-            z.name= name;
-            z.message= message;
-            z.donateeAddress = msg.sender;
-            donateeList.push(z);
-            
-            
-    }
-        
-    function getListOfDonatees() public view returns (Donatee[] memory) {
-        return donateeList;
-    }
-    
+	    
+	    
+	    Donatee[] public donateeList;
+	    
+	    //The needy people would upload their data on the portal connected to the Blockchain system
+	
 
+	    function _donateeDetails (string memory name, string memory message ) public OnlyDonatee{
+	         Donatee memory z;
+	            z.name= name;
+	            z.message= message;
+	            z.donateeAddress = msg.sender;
+	            donateeList.push(z);
+	            
+	            
+	    }
+	    
+	    //The community can access their data from the Blockchain and would be able to help them directly and safely
+	
 
-    uint256 public threshold;
-    uint256 max;
-    address[] accounts; 
-      address donatee;
-      address donor;
-      address charitableorg;
+	    function getListOfDonatees() public view returns (Donatee[] memory) {
+	        return donateeList;
+	    }
+	    
+	//Q3:
+	
 
-    /*modifier OnlyCharitableOrg{
-        require(
-            charitableorg == msg.sender,
-            "You are not allowed to perform this action"
-        );
-        _; 
-    }*/
+	    uint256 public threshold;
+	    uint256 max;
+	    address[] accounts; 
+	      address donatee;
+	      address donor;
+	      address charitableorg;
+	
 
-    
-    struct Donor{
-        address donorAddress;
-    }
-   /* modifier OnlyDonor {
-        require(
-            donor == msg.sender,
-            "You are not allowed to perform this action"
-        );
-        _;
-    } */
-    
+	// Restrict functions to only valid charitable organization account user
+	
 
-    uint256 private balance;
+	    modifier OnlyCharitableOrg{
+	        require(
+	            charitableorg == msg.sender,
+	            "You are not allowed to perform this action"
+	        );
+	        _; 
+	    }
+	
 
+	    // Restrict functions to only valid donor account user
+	
 
+	    struct Donor{
+	        address donorAddress;
+	    }
+	    modifier OnlyDonor {
+	        require(
+	            donor == msg.sender,
+	            "You are not allowed to perform this action"
+	        );
+	        _;
+	    } 
+	    
+	
 
-    // set threshold for any transaction
-    function setThreshold(uint256 _threshold) public { //OnlyCharitableOrg/
-        threshold = _threshold;
-    }
+	    uint256 private balance;
+	
 
-  
-    event AboveTheThreshold(
-        string message,
-        address donorAddress,
-        uint256 amount
-        );
-    
-    function donate(uint256 amount) public payable { //OnlyDonor/
-            if(amount > 0){
-               if((balance + amount) > threshold){ 
-                    emit AboveTheThreshold(
-                "Your donation amount is above the threshold and is suspected of money laundering! ",
-                msg.sender,
-                amount
-                
-            );
-                }else{
-                    (balance += amount);
-                }
-            }
-            if (msg.value > threshold) {
-            emit AboveTheThreshold(
-                "transaction amount above threshold! ",
-                msg.sender,
-                msg.value
-            );
-        }
-    } 
-  
+	    // set threshold 
+	    function setThreshold(uint256 _threshold) public OnlyCharitableOrg{
+	        threshold = _threshold;
+	    }
+	
 
+	    // Emitted when the donation amount > threshold
+	    event AboveTheThreshold(
+	        string message,
+	        address donorAddress,
+	        uint256 amount
+	        );
+	    
+	    function donate(uint256 amount) public payable OnlyDonor{
+	            if(amount > 0){
+	                if(amount > threshold){
+	                          // emitted when a donation amount > threshold
+	                    emit AboveTheThreshold(
+	                "Your donation amount is above the threshold! ", //message
+	                msg.sender, //account address
+	                amount //amount
+	            );
+	                }else{
+	                    (balance += amount);
+	                }
+	            }
+	            
+	    } 
+	
 
-    function withdraw(uint256 amount) public payable { //OnlyDonor/
-            if(amount > 0){
-                if(amount > threshold){
-                    emit AboveTheThreshold(
-                "Your withdrawl amount is above the threshold and is suspected of money laundering! ",
-                msg.sender,
-                amount
-            );
-                }else{
-                    (balance -= amount);
-                }
-            }
-            
-    }
+	
 
-    function getBalance() public view returns(uint256){
-        return balance;
-    }
-           
-// Defining a constructor   
-     constructor() public{   
-        max = 50 ether;
-        threshold = 10 ether;
+	//Ejmen part: Q3, b part
+	
 
-    }
+	// Defining a constructor   
+	     constructor() public{   
+	        max = 50 ether;
+	        threshold = 10 ether;
+	
 
-      struct CharitableOrg{
-        address charitableAddress;
-    }  
+	    }
+	
 
-    }
+	    function withdraw(uint256 amount) public payable OnlyDonor{
+	            if(amount > 0){
+	                if(amount > threshold){
+	                    emit AboveTheThreshold(
+	                "Your withdrawl amount is above the threshold! ",
+	                msg.sender,
+	                amount
+	            );
+	                }else{
+	                    (balance -= amount);
+	                }
+	            }
+	            
+	    }
+	
+
+	    function getBalance() public view returns (uint256){
+	        return balance;
+	    }
+	           
+	
+
+	
+
+	      
+	    }
+	
+
